@@ -17,7 +17,6 @@ Features include:
 
 I completed **Problem 1** (game logic and UI) and **Problem 3** (backend and database integration).
 
----
 
 ## Getting Started
 
@@ -25,7 +24,6 @@ I completed **Problem 1** (game logic and UI) and **Problem 3** (backend and dat
 
 - [Node.js](https://nodejs.org/en) installed (v18+ recommended)  
 
----
 
 ### 1. Start the Frontend
 
@@ -37,7 +35,6 @@ npm start
 
 The React app will run at: [http://localhost:3000](http://localhost:3000)
 
----
 
 ### 2. Start the Backend
 
@@ -49,7 +46,6 @@ npm start
 
 The Express server will run at: [http://localhost:4000](http://localhost:4000)
 
----
 
 ### Testing
 
@@ -61,7 +57,6 @@ npm test
 
 The backend tests use `supertest` and an in-memory SQLite database.
 
----
 
 ## Notes
 
@@ -82,7 +77,6 @@ The backend tests use `supertest` and an in-memory SQLite database.
 - Add user authentication and player profiles to track individual stats
 - Improve testing coverage with end-to-end tests
 
----
 
 ## Project Structure
 
