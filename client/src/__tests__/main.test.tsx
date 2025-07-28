@@ -7,7 +7,7 @@ describe('Main Component', () => {
   let cells: HTMLElement[]
 
   const getCells = () =>
-    screen.getAllByText((_, el) => el?.className.includes('border-2') ?? false)
+    screen.getAllByTestId('board-cell')
 
   const makePlayerXWin = () => {
     cells = getCells()
@@ -28,7 +28,10 @@ describe('Main Component', () => {
     ) as jest.Mock
   })
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    // await act(async () => {
+    //   render(<Main />)
+    // });
     render(<Main />)
     cells = getCells()
   })
@@ -39,20 +42,20 @@ describe('Main Component', () => {
   })
 
   test('shows that Player X starts', () => {
-    expect(screen.getByText('Current turn: X')).toBeInTheDocument()
+    expect(screen.getByText('Current turn: Player X')).toBeInTheDocument()
   })
 
   test('clicking a cell updates it with X and switches to O', () => {
     fireEvent.click(cells[0])
     expect(cells[0]).toHaveTextContent('X')
-    expect(screen.getByText('Current turn: O')).toBeInTheDocument()
+    expect(screen.getByText('Current turn: Player O')).toBeInTheDocument()
   })
 
   test('clicking the same cell twice does not change it', () => {
     fireEvent.click(cells[0])
     fireEvent.click(cells[0])
     expect(cells[0]).toHaveTextContent('X')
-    expect(screen.getByText('Current turn: O')).toBeInTheDocument()
+    expect(screen.getByText('Current turn: Player O')).toBeInTheDocument()
   })
 
   test('detects a winner and shows winner message', async () => {
@@ -77,7 +80,7 @@ describe('Main Component', () => {
 
     fireEvent.click(resetButton)
     getCells().forEach(cell => expect(cell).toHaveTextContent(''))
-    expect(screen.getByText('Current turn: X')).toBeInTheDocument()
+    expect(screen.getByText('Current turn: Player X')).toBeInTheDocument()
   })
 
   test('shows "Start New Game" after game ends and resets everything', async () => {
@@ -89,7 +92,7 @@ describe('Main Component', () => {
 
     fireEvent.click(startNewButton)
     getCells().forEach(cell => expect(cell).toHaveTextContent(''))
-    expect(screen.getByText('Current turn: X')).toBeInTheDocument()
+    expect(screen.getByText('Current turn: Player X')).toBeInTheDocument()
   })
 
   test('cells are disabled after game ends', async () => {
