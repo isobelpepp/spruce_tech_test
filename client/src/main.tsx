@@ -1,38 +1,36 @@
 import React, { useState } from 'react'
-import { XorO } from './types'
-
-type Board = (XorO | undefined)[][]
-
-const emptyBoard = (): Board => [
-  [undefined, undefined, undefined],
-  [undefined, undefined, undefined],
-  [undefined, undefined, undefined]
-]
+import { XorO, Board } from './types'
+import { emptyBoard, checkGameStatus } from './utils/board'
 
 export const Main = () => {
   const [board, setBoard] = useState<Board>(emptyBoard)
   const [currentPlayer, setCurrentPlayer] = useState<XorO>('X')
+  const [winner, setWinner] = useState<XorO | 'draw' | null>(null)
 
   const handleClick = (rowIndex: number, colIndex: number) => {
-    // TODO: also return if game is finished
-    if (board[rowIndex][colIndex]) return
+    if (board[rowIndex][colIndex] || winner) return
 
-    // Fill in cell
     const newBoard = board.map(row => [...row])
     newBoard[rowIndex][colIndex] = currentPlayer
     setBoard(newBoard)
 
-    // Check for winner
-
-    // Set current player
-    setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X')
+    const gameResult = checkGameStatus(newBoard)
+    if (gameResult) {
+      setWinner(gameResult)
+    } else {
+      setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X')
+    }
   }
 
   return <div className='flex flex-col mt-10 items-center gap-10'>
     <div className='font-bold text-2xl'>Tic Tac Toe</div>
 
     <div className='text-lg font-semibold'>
-        {`Current turn: ${currentPlayer}`}
+        {winner
+          ? winner === 'draw'
+            ? 'It’s a draw!'
+            : `Player ${winner} wins!`
+          : `Current turn: ${currentPlayer}`}
     </div>
 
     <div className='flex flex-col gap-1'>
