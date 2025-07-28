@@ -16,5 +16,19 @@ export function createApp(db: Database) {
     res.sendStatus(201)
   })
 
+  app.get('/stats', async (req, res) => {
+    type Row = { winner: 'X' | 'O' | 'draw'; count: number }
+    const rows = await db.all<Row[]>(`
+      SELECT winner, COUNT(*) as count
+      FROM results
+      GROUP BY winner;
+    `)
+    const stats = { X: 0, O: 0, draw: 0 }
+    rows.forEach((r) => {
+      stats[r.winner] = r.count
+    })
+    res.json(stats)
+  })
+
   return app
 }

@@ -6,7 +6,7 @@ import { createApp } from '../app'
 let db: any
 let app: any
 
-beforeAll(async () => {
+beforeEach(async () => {
   db = await open({
     filename: ':memory:',
     driver: sqlite3.Database,
@@ -23,7 +23,7 @@ beforeAll(async () => {
   app = createApp(db)
 })
 
-afterAll(async () => {
+afterEach(async () => {
   await db.close()
 })
 
@@ -55,7 +55,7 @@ describe('POST /results', () => {
   it('should return 400 for invalid winner and not save result', async () => {
     const res = await request(app).post('/results').send({ winner: 'invalid' })
     expect(res.status).toBe(400)
-    expect(res.body.error).toBe('invalid winner')
+    expect(res.body.error).toBe('Invalid winner')
 
     const rows = await db.all('SELECT * FROM results WHERE winner = ?', 'invalid')
     expect(rows.length).toBe(0)
@@ -64,6 +64,33 @@ describe('POST /results', () => {
   it('should return 400 if winner is missing', async () => {
     const res = await request(app).post('/results').send({})
     expect(res.status).toBe(400)
-    expect(res.body.error).toBe('invalid winner')
+    expect(res.body.error).toBe('Invalid winner')
+  })
+})
+
+describe('GET /stats', () => {
+  it('should return zeros if no results exist', async () => {
+    const res = await request(app).get('/stats')
+
+    expect(res.status).toBe(200)
+    expect(res.body).toEqual({
+      X: 0,
+      O: 0,
+      draw: 0
+    })
+  })
+
+  it('should return correct stats after posting results', async () => {
+    await request(app).post('/results').send({ winner: 'X' })
+    await request(app).post('/results').send({ winner: 'draw' })
+
+    const res = await request(app).get('/stats')
+
+    expect(res.status).toBe(200)
+    expect(res.body).toEqual({
+      X: 1,
+      O: 0,
+      draw: 1
+    })
   })
 })
